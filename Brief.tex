@@ -1,0 +1,44 @@
+\documentclass[
+  fontsize=11pt,
+  paper=a4,
+  parskip=half,
+  enlargefirstpage=on,    % More space on first page
+  fromalign=right,        % PLacement of name in letter head
+  fromphone=on,           % Turn on phone number of sender
+  fromemail=on,           % Turn on email of sender
+  fromrule=aftername,     % Rule after sender name in letter head
+  addrfield=on,           % Adress field for envelope with window
+  backaddress=on,         % Sender address in this window
+  subject=beforeopening,  % Placement of subject
+  locfield=narrow,        % Additional field for sender
+  foldmarks=on,           % Print foldmarks
+]{scrlttr2}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman]{babel}
+
+
+\setkomafont{fromname}{\sffamily}
+\setkomafont{fromaddress}{\sffamily}%% statt \small
+\setkomafont{pagenumber}{\sffamily}
+\setkomafont{subject}{\bfseries}
+\setkomafont{backaddress}{\mdseries}
+
+\LoadLetterOption{DIN}
+\setkomavar{fromname}{Name}
+\setkomavar{fromaddress}{Strasse Nr\\0000 Ortschaft\\Land}
+\setkomavar{fromphone}{+40 00\,000\,00\,00}
+\setkomavar{fromemail}{simeon.stix@smoca.ch}\setkomavar{backaddressseparator}{\enspace\textperiodcentered\enspace}
+\setkomavar{signature}{(Signatur)}
+\setkomavar{place}{Ort}
+\setkomavar{date}{\today}
+\setkomavar{enclseparator}{: }
+
+\begin{document}
+  \begin{letter}{Herr\\Max Mustermann\\Häuserstrasse 10\\1000 Bern\\Schweiz}
+    \setkomavar{subject}{Betreff}
+    \opening{Sehr geehrte ...}
+
+    \closing{Mit freundlichen Grüssen}
+  \end{letter}
+\end{document}
