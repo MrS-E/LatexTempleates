@@ -1,0 +1,193 @@
+\documentclass[a4paper]{article}
+
+\usepackage[utf8]{inputenc}  % for UTF-8 encoding
+\usepackage[T1]{fontenc}     % for better font encoding
+\usepackage[ngerman]{babel}  % for language support
+\usepackage{lmodern}         % Latin Modern font
+\usepackage{graphicx}        % for including graphics
+\usepackage{caption}  		 % for customizing the caption
+\usepackage{pdflscape}       % for landscape mode
+\usepackage{amsmath, amssymb} % for mathematical symbols and equations
+\usepackage{hyperref}        % for clickable links
+\usepackage{nameref}		 % for reverences with name
+\usepackage[nottoc]{tocbibind}       % to include TOC in the table of contents
+\usepackage{geometry}       % for page margins
+\usepackage{setspace}       % for line spacing
+\usepackage{titlesec}       % for headings
+\usepackage{fontspec}       % for font selection (for LuaLaTeX or XeLaTeX)
+\usepackage{fancyhdr}       % for headers and footers
+\usepackage{parskip}        % for spacing between paragraphs
+\usepackage{etoolbox}       % for conditional macros
+\usepackage{siunitx} 		% for alignment of numbers in tables
+\usepackage{multirow} 		% for multirows in tables
+\usepackage{booktabs}		% for prettier tables
+\usepackage{longtable} 		% for long tables that span multiple pages
+\usepackage[backend=biber, style=apa]{biblatex}		% für Quellenverzeichnis
+\usepackage{csquotes}  		% Für richtiges Zitieren von Quellen
+%\usepackage[toc,page,title]{appendix}		% for appendices
+\usepackage{pdfpages}
+\usepackage[most]{tcolorbox}
+\usepackage{xcolor}
+\usepackage{eurosym}
+\usepackage{float}
+\usepackage{afterpage}
+
+% Font choice: Arial (font size 11pt) or Times New Roman (font size 12pt)
+%\setmainfont{Times New Roman}[SizeFeatures={Size=12}]
+\setmainfont{Arial}[SizeFeatures={Size=11}]
+
+% margins
+\geometry{
+    a4paper,
+    top=2.5cm,
+    left=2.5cm,
+    bottom=4cm,
+    right=2cm,
+    headsep=1.25cm,  % header position
+    footskip=2.9cm   % footer position (4-1.1=2.9, da von oben gerechnet)
+}
+
+% line spacing for standard text (1.5x spacing)
+\setstretch{1.5}
+
+% adjustment of headings
+% Heading 1: 15/16pt, bold, hanging indent 1.5, spacing before 16, after 8
+\titleformat{\section}[hang]
+  {\normalfont\bfseries\fontsize{15}{15}\selectfont}{\thesection}{1.5em}{}
+
+% Heading 2: 13/14pt, bold, hanging indent 1.5, spacing before 14, after 7
+\titleformat{\subsection}[hang]
+  {\normalfont\bfseries\fontsize{13}{13}\selectfont}{\thesubsection}{1.5em}{}
+\titlespacing{\subsection}{1.5em}{14pt}{7pt}
+
+% Heading 3: 11/12pt, bold, hanging indent 1.5, spacing before 12, after 6
+\titleformat{\subsubsection}[hang]
+  {\normalfont\bfseries\fontsize{11}{11}\selectfont}{\thesubsubsection}{1.5em}{}
+\titlespacing{\subsubsection}{1.5em}{12pt}{6pt}
+
+% Heading 4: 11/12pt, normal, hanging indent 1.5, spacing before 12, after 6
+\titleformat{\paragraph}[hang]
+  {\normalfont\normalsize\fontsize{11}{11}\selectfont}{\theparagraph}{1.5em}{}
+\titlespacing{\paragraph}{1.5em}{12pt}{6pt}
+
+% Definition of \subparagraph starting new line after heading
+\titleformat{\subparagraph}
+    {\normalfont\normalsize\bfseries}{\thesubparagraph}{1em}{}
+\titlespacing*{\subparagraph}{\parindent}{3.25ex plus 1ex minus .2ex}{.75ex plus .1ex}
+
+% Adjustment of spacing for the default text: 11/12 pt, normal, indentation 0, spacing before 0, after 3
+\setlength{\parindent}{0pt}  % No indentation for new paragraphs
+\setlength{\parskip}{3pt}    % spacing after paragraph 3pt
+
+% Macro to adjust the spacing between headings
+\newcommand{\fixspacing}{
+    \ifnum\value{secnumdepth}=1
+        \vspace{18pt}  % If headings 1 and 2 follow one another directly, set the spacing to 18pt
+    \fi
+}
+
+% line spacing for tables
+\renewcommand{\arraystretch}{1.2}
+
+% alignment of numbers in tables
+\sisetup{
+  round-mode          = places, % Rounds numbers
+  round-precision     = 2, % to 2 places
+}
+
+%header and footer settings
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Disposition IDPA ESRS VSME 2024/25}
+\fancyhead[R]{\leftmark}
+\fancyfoot[C]{\thepage}
+
+%rewrites plain page style to make header work with toc, bib, lof, etc.
+\makeatletter
+\let\ps@plain\ps@fancy
+\makeatother
+
+% Stellt sicher, dass für \section Punkte hinzugefügt werden
+%\renewcommand{\cftsecdotsep}{\cftdotsep}  
+
+%links
+\hypersetup{
+    colorlinks=true,      % Enables colored links
+    linkcolor=black,       % Color for internal links (e.g., Table of Contents)
+    urlcolor=blue,        % Color for URLs
+    citecolor=black,       % Color for citations in the bibliography
+    filecolor=blue,       % Color for file links
+    menucolor=blue        % Color for menu links in Acrobat
+}
+
+% re-defining href to add contents lines
+\usepackage{tocloft}
+\newlistof{links}{lnks}{}
+\let\oldhref\href
+\renewcommand{\href}[2]{\oldhref{#1}{#2}\addcontentsline{lnks}{figure}{#2: \textcolor{blue}{\url{#1}}}}
+\usepackage{xurl}\urlstyle{same}\renewcommand\cftsecaftersnum{\newline}
+
+%appendix
+%\renewcommand\appendixtocname{Anhang}
+%\renewcommand\appendixpagename{Anhang}
+
+%source material (Bib-File)
+\addbibresource{bibliography.bib}
+
+%image path definition
+\graphicspath{{./img/}}
+
+\title{
+    \vspace{2cm}
+    \Huge \textbf{ESRS VSME Report für Smoca AG} \\[1.5cm]
+    \large Interdisziplinäre Projektarbeit, Informatikmittelschule Frauenfeld\\[2cm]
+    \textbf{Stix, Simeon} \\[0.5cm]
+    \textit{Betreuer: Meier, Christian} \\[2cm]
+    \begin{figure}[H] 
+		\centering
+		%\includegraphics[width=0.7\textwidth]{titelbild}
+		\label{fig:titelbild}
+		\captionsetup{labelformat=empty}  % Hide the caption in the document for this figure
+    	\caption[]{} % don't write into {}
+	\end{figure}
+	
+}
+
+% Set if custom date is wanted
+%\date{24.02.2025}
+
+\begin{document}
+\maketitle
+\thispagestyle{empty}
+\newpage
+
+\setcounter{tocdepth}{4} % Inhaltsverzeichnisebenen
+\setcounter{secnumdepth}{4} % Nummerierungsebenen
+\tableofcontents
+\newpage
+
+\section*{Abstract}
+\addcontentsline{toc}{section}{Abstract}
+\section{Einleitung}
+
+\section{Nachwort}
+
+\section{Glossar}
+
+\section*{Literaturverzeichnis}
+\addcontentsline{toc}{section}{Literaturverzeichnis}
+\printbibliography[heading=none]
+
+\newpage
+
+\listoffigures
+
+\listoftables
+
+\newpage
+
+\section*{Anhang}
+\addcontentsline{toc}{section}{Anhang}
+
+
+\end{document}
