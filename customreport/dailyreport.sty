@@ -1,0 +1,53 @@
+\ProvidesPackage{dailyreport}
+\RequirePackage{pgfgantt}
+\RequirePackage{geometry}
+\RequirePackage{multicol}
+\RequirePackage{titlesec}
+\RequirePackage{xparse}
+\RequirePackage{pgfkeys}
+
+\newcommand{\sectionline}{\noindent\rule{\linewidth}{0.5pt}}
+
+\newcommand{\DailyReportSection}[2]{
+    \vspace{-\baselineskip}\sectionline
+    \vspace{-0.7em}
+    \section*{#1}
+    \vspace{-0.7em}
+    \sectionline
+    #2
+}
+
+% Define the key-value system
+\pgfkeys{/dailyreport/.is family, /dailyreport,
+	date/.initial = \today,
+    task/.initial = -,
+    remarks/.initial = ,
+}
+
+\NewDocumentEnvironment{dailyreport}{m O{date=\today} O{}}{
+    \pgfkeys{/dailyreport, #2, #3}
+    
+    \newpage
+    \edef\datevalue{\pgfkeysvalueof{/dailyreport/date}}
+    \edef\taskvalue{\pgfkeysvalueof{/dailyreport/task}}
+    \edef\remarksvalue{\pgfkeysvalueof{/dailyreport/remarks}}
+    
+	\noindent
+	\textbf{Datum:} \datevalue \hfill
+    \textbf{Task:} \taskvalue \hfill
+    \textbf{Anmerkung:} \remarksvalue \hfill
+    
+    \vspace{10pt}
+    
+    \IfNoValueTF{#1}{}{
+        #1
+        \vspace{10pt}
+    }
+
+    \begin{multicols}{2}
+}{
+\end{multicols}
+\newpage
+}
+
+\endinput

@@ -1,0 +1,58 @@
+\ProvidesPackage{workjournal}
+\RequirePackage{array, booktabs, multirow}
+\RequirePackage[ngerman]{datetime2}
+\RequirePackage{datetime2-calc}
+\RequirePackage{tabularx}
+
+\newcommand{\journaldate}{}
+\newcommand{\journalweekday}{}
+
+\newenvironment{workjournal}[1]{ % YYYY, MM, DD
+    \renewcommand{\journaldate}{\DTMdate{#1}} 
+    \renewcommand{\journalweekday}{
+    	\DTMcomputedayofweekindex{#1}{\day}
+    	\DTMWeekdayname{\day}
+    }
+    
+    \begin{table}[htb]
+    \centering
+    \begin{tabular}{p{\textwidth/4-2cm}@{\hspace{2cm}}p{\textwidth*3/4}}
+    \toprule
+    \multicolumn{2}{l}{\textbf{\journalweekday\hspace{0.5cm}---\hspace{0.5cm}\journaldate}} \\ \hline
+}{
+    \end{tabular}
+    \addcontentsline{toc}{subsection}{\hspace{3em}\journalweekday --- \journaldate}
+    \caption{Arbeitsjournal Tag \journaldate}
+    \end{table}
+}
+
+\newcommand{\journalstatus}[1]{Projekt Status & #1 \\\hline}
+\newcommand{\journalplanned}[1]{Geplante Arbeiten & #1 \\\hline}
+\newcommand{\journalexecuted}[1]{Ausgeführte Arbeiten & #1 \\\hline}
+\newcommand{\journalproblems}[1]{Probleme & #1 \\\hline}
+\newcommand{\journalremarks}[1]{Bemerkungen & #1 \\\hline}
+\newcommand{\journalhelp}[1]{Hilfestellungen & #1 \\\hline}
+
+
+\newcommand{\journaltime}[1]{
+    \multicolumn{2}{l}{Ist-/Soll-Zeit} \\ 
+    \multicolumn{2}{r}{
+    \begin{tabularx}{\textwidth/2}{l|cc}
+    \multirow{2}{*}{Aufgabe} & \multicolumn{2}{l}{Zeit (h)} \\
+    & Ist & Soll \\\hline
+    #1 \\
+    \end{tabularx}
+    } 
+    \\\hline
+}
+
+%usage:
+%\begin{workjournal}{2025-03-17}
+%\journalstatus{}
+%\journalplanned{}
+%\journalexecuted{}
+%\journalproblems{-}
+%\journalhelp{-}
+%\journaltime{}
+%\journalremarks{-}
+%\end{workjournal}

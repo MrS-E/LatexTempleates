@@ -1,0 +1,170 @@
+\ProvidesPackage{gantt}
+\RequirePackage{pgfgantt}
+\RequirePackage{xcolor}
+
+
+\definecolor{barblue}{rgb}{0.4,0.6,0.8}  
+\definecolor{groupblue}{rgb}{0.3,0.5,0.7}  
+\definecolor{linkred}{rgb}{0.8,0.2,0.2}  
+
+\newcommand{\DefineGanttChart}[4]{
+    \gdef\GanttTitle{#1}
+    \gdef\GanttStart{#2}
+    \gdef\GanttEnd{#3}
+    \gdef\GanttTasks{#4}
+}
+
+\newcommand{\DefineGanttTitle}[1]{
+	\gdef\GanttTitleAddition{#1}
+}
+
+%\newcommand{\DefineGanttConfig}[1]{
+%    \def\GanttAdditionalConfig{#1}
+%            \ifdefined\GanttAdditionalConfig
+%          \foreach \task in \GanttAdditionalConfig {
+%            \ganttset{\xStr\task}
+%        }
+%        \fi
+%}
+
+\makeatletter
+\newcommand{\UpdateTaskProgress}[2]{%
+    \gdef\TempGanttTasks{}% Reset temporary storage
+    \gdef\TargetName{#1}%
+    \gdef\NewProgress{progress=#2}%
+
+    \typeout{DEBUG: Updating Task Progress for '#1' to '#2'}%
+
+    % Iterate through the task list and modify as needed
+    \def\ProcessTask##1{%
+        \edef\TempTask{##1}%
+        \typeout{DEBUG: Processing Task: \detokenize{##1}}%
+
+        % Look for the correct task and modify it
+        \expandafter\ifstr\expandafter{\TargetName}{\detokenize{##1}}
+            \typeout{DEBUG: Match found for Task: #1. Updating progress...}%
+            \protected@edef\TempTask{\noexpand\ganttbar[progress=#2, name=\TargetName]##1}%
+        \else
+            \typeout{DEBUG: No Match. Keeping Task Unchanged.}%
+        \fi
+
+        % Store the updated or unchanged task
+        \protected@edef\TempGanttTasks{\TempGanttTasks \TempTask \par}%
+    }
+
+    % Expand and process all tasks safely
+    \long\def\ProcessTasksList#1{%
+        \ifx#1\relax
+        \else
+            \ProcessTask{#1}%
+            \expandafter\ProcessTasksList\expandafter
+        \fi
+    }
+
+    % Process existing tasks
+    \expandafter\ProcessTasksList\expandafter{\GanttTasks\relax}
+
+    % Update the GanttTasks macro
+    \protected@xdef\GanttTasks{\TempGanttTasks}%
+
+    \typeout{DEBUG: Final Updated GanttTasks: \detokenize{\GanttTasks}}%
+}
+\makeatother
+
+\newcommand{\PrintGanttChart}[1]{%
+    \begin{center}
+        %{\Large\bfseries \GanttTitle}\\[4pt]
+        \begin{ganttchart}[
+        x unit=0.2cm, 
+        y unit chart=0.4cm, 
+        % canvas and grid
+        canvas/.append style={fill=none, draw=black!5, line width=.75pt},
+        hgrid style/.style={draw=black!5, line width=.75pt},
+        vgrid={*1{draw=black!5, line width=.75pt}},
+        % today
+        today=#1,
+        today rule/.style={draw=black!64, dash pattern=on 3.5pt off 4.5pt, line width=1.5pt},
+        today label font=\small\bfseries,
+        %today offset=.5
+        % Title and Labels
+        %title/.style={draw=none, fill=none},
+        title label font=\bfseries\footnotesize,
+        %title label node/.append style={below=7pt},
+        %include title in canvas=false,
+        % Tasks
+        bar label font=\mdseries\small\color{black!70},
+        bar label node/.append style={left=2cm},
+        bar/.append style={draw=none, fill=black!63},
+        bar incomplete/.append style={fill=barblue},
+        bar progress label font=\mdseries\footnotesize\color{black!70},
+        progress label text={},
+        % Groups
+        group incomplete/.append style={fill=groupblue},
+        group left shift=0, group right shift=0,
+        group height=.3,
+        group peaks tip position=0,
+        group label node/.append style={left=.6cm},
+        group progress label font=\bfseries\small,
+		% Task Dependencies (Links)
+		link/.style={-latex, line width=1.5pt, linkred},
+		link label font=\scriptsize\bfseries,
+		link label node/.append style={below left=-2pt and 0pt},
+		% Milestone
+		milestone height=0.4, milestone label font=\footnotesize,
+		% Time 
+		%time slot format=little-endian,
+		]{\GanttStart}{\GanttEnd}
+            \ifdefined\GanttTitleAddition
+                \GanttTitleAddition \\
+            \else
+                \gantttitlelist{\GanttStart,...,\GanttEnd}{1} \\
+            \fi 
+      		\GanttTasks
+        \end{ganttchart}
+    \end{center}
+}
+
+\newcommand{\PrintGanttChartSection}[3]{%
+    \begin{center}
+       	{\Large\bfseries \GanttTitle}\\[5pt]
+        \begin{ganttchart}[
+        x unit=0.2cm,
+        y unit chart=0.5cm, 
+        % canvas and grid
+        canvas/.append style={fill=none, draw=black!5, line width=.75pt},
+        hgrid style/.style={draw=black!5, line width=.75pt},
+        vgrid={*1{draw=black!5, line width=.75pt}},
+        % today
+        today=#1,
+        today rule/.style={draw=black!64, dash pattern=on 3.5pt off 4.5pt, line width=1.5pt},
+        today label font=\small\bfseries,
+        % Title and Labels
+        %title/.style={draw=none, fill=none},
+        title label font=\bfseries\footnotesize,
+        %title label node/.append style={below=7pt},
+        %include title in canvas=false,
+        % Tasks
+        bar label font=\mdseries\small\color{black!70},
+        bar label node/.append style={left=2cm},
+        bar/.append style={draw=none, fill=black!63},
+        bar incomplete/.append style={fill=barblue},
+        bar progress label font=\mdseries\footnotesize\color{black!70},
+        % Groups
+        group incomplete/.append style={fill=groupblue},
+        group left shift=0, group right shift=0,
+        group height=.5,
+        group peaks tip position=0,
+        group label node/.append style={left=.6cm},
+        group progress label font=\bfseries\small,
+		% Task Dependencies (Links)
+		link/.style={-latex, line width=1.5pt, linkred},
+		link label font=\scriptsize\bfseries,
+		link label node/.append style={below left=-2pt and 0pt},
+        ]{#1}{#2} % Use the start and end dates passed as the first two arguments
+            \gantttitlelist{#1,...,#2}{1} \\
+      		\GanttTasks
+        \end{ganttchart}
+    \end{center}
+}
+
+\endinput

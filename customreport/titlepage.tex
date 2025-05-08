@@ -1,0 +1,71 @@
+%----------------------------------------
+%   TITLE PAGE
+%----------------------------------------
+% Define commands
+\makeatletter
+
+% Define internal macros to store metadata
+\def\@title{Default Title}
+\def\@subtitle{Default Subtitle}
+\def\@author{Default Author}
+\def\@date{\today}
+\def\@institution{Default Institution}
+\def\@image{}
+\def\@description{}
+
+% Public-facing commands to modify metadata
+\newcommand{\subject}[1]{\gdef\@title{#1}}
+\newcommand{\subsubject}[1]{\gdef\@subtitle{#1}}
+\newcommand{\penpusher}[1]{\gdef\@author{#1}}
+\newcommand{\term}[1]{\gdef\@date{#1}}
+\newcommand{\institution}[1]{\gdef\@institution{#1}}
+\newcommand{\logo}[2]{\gdef\@image{#1} \gdef\@description{#2}}
+
+\renewcommand{\maketitle}{
+\begin{titlepage}
+	%Image
+
+	\begin{flushleft}
+	    \begin{figure}[H] 
+	    	\ifx\@image\@empty
+    			% No logo specified, do nothing
+    		\else
+       			\includegraphics[width=30mm]{\@image} \\
+    			\captionsetup{labelformat=empty}
+        		\caption[\@description]{}
+        		\label{fig:titelbild}
+       		\fi
+       		\hfill
+       	\end{figure}
+   	\end{flushleft}
+
+    \vskip 10em
+
+	% Title
+    \begin{flushleft}
+        {\huge \textbf{\@title}} \\
+        \rule{\textwidth}{0.5mm}
+    \end{flushleft}
+
+    \vskip 7em
+    
+    % Subtitle
+    \begin{flushleft}
+        \Large
+        {\textsc{\@subtitle}}
+    \end{flushleft}
+
+    \vfill
+    
+    % Information Table
+    \noindent
+    \begin{tabular}{@{} p{40mm} l}
+        \textbf{Autor} & \parbox[t]{50mm}{\@author} \vspace{3mm} \\
+        \textbf{Firma} & \parbox[t]{50mm}{\@institution} \vspace{3mm} \\
+        \textbf{Erstellt am} & \parbox[t]{50mm}{\@date}
+    \end{tabular}
+    
+\end{titlepage}
+}
+
+\makeatother
